@@ -161,32 +161,74 @@ def uniformCostSearch(problem: SearchProblem):
     # use pq(priority queue)
     pq = util.PriorityQueue()
     visited = set()
+    finaltravel = []
     pq.push((problem.getStartState(), [], 0), 0)
-    pop = pq.pop()
-    travel = []
+    
+    # pop = pq.pop()
+    # visited.add(pop[0])
+    
     
     # while not pq.isEmpty() was not working as most likely I reached the end of the non-visited pq. So instead I'm gonna change it to checking the goal state.
-    while not problem.isGoalState(pop[0]):
-        visited.add(pop[0])
-        # When placed inside of the inner loop, I'm essentially starting the whole process over again for each successor. Like retracing my steps    
+    # while not problem.isGoalState(pop[0]):
+    #     # When placed inside of the inner loop, I'm essentially starting the whole process over again for each successor. Like retracing my steps    
+    #     for i in problem.getSuccessors(pop[0]):
+    #         curtravel = []
+    #         priority = 0
+    #         state = i[0]
+    #         move = i[1]
+    #         cost = i[2]
+    #         if state not in visited:
+    #             visited.add(pop[0])
+    #             # visited.add(state)
+    #             print("Curruent State: ", state)
+    #             curtravel = list(pop[1])
+    #             curtravel.append(move)
+    #             priority = pop[2] + cost
+    #             pq.push((state, curtravel, priority), priority)
+    #     pop = pq.pop()
+    while not pq.isEmpty():
+        pop = pq.pop()
+        
+        
+        if problem.isGoalState(pop[0]):
+            # print("Final Transition: ", pop[1])
+            # finaltravel = pop[1]
+            return pop[1]
+        # visited.add(pop[0])
+        if pop[0] in visited:
+            continue
         for i in problem.getSuccessors(pop[0]):
-            curtravel = []
-            priority = 0
             state = i[0]
             move = i[1]
             cost = i[2]
+            travel = []
+            priority = 0
             
-            if state not in visited:
-                curtravel = list(pop[1])
-                curtravel.append(move)
-                priority = pop[2] + cost
-                pq.update((state, curtravel, priority), priority)
-        pop = pq.pop()
+
+            visited.add(pop[0])
+                # visited.add(pop[0])
+                # print("moves: ", pop[1])
+            travel = list(pop[1])
+            travel.append(move)
+            priority += pop[2]
+            priority += cost
+            pq.update((state, travel, priority), priority)
+            # if state in visited:
+            #     # visited.add(pop[0])
+            #     continue
+
+
+
+
+
+        
+        
+        
         
     
-    travel = pop[1]
-    return travel
-            
+    # travel = pop[1]
+    # return travel
+    
                 
                 
             
@@ -205,7 +247,43 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pq = util.PriorityQueue()
+    visited = set()
+    # finaltravel = []
+    pq.push((problem.getStartState(), [], 0), 0)
+    
+    while not pq.isEmpty():
+        cstate, cpath, curcost = pq.pop()
+        # print("State: ", cstate)
+        print("Cost: ", curcost)
+        
+        if problem.isGoalState(cstate):
+            # print("Final Transition: ", pop[1])
+            # finaltravel = pop[1]
+            # print("Path: ", cpath)
+            return cpath
+        # visited.add(pop[0])
+        if cstate in visited:
+            continue
+        visited.add(cstate)
+        for i in problem.getSuccessors(cstate):
+            state = i[0]
+            move = i[1]
+            cost = i[2]
+            travel = []
+            priority = 0
+                # visited.add(pop[0])
+                # print("moves: ", pop[1])
+            travel = list(cpath)
+            travel.append(move)
+            priority = curcost + cost
+            pq.push((state, travel, priority), priority + heuristic(state, problem))
+
+            # if state in visited:
+            #     # visited.add(pop[0])
+            #     continue
+
+    # util.raiseNotDefined()
 
 
 # Abbreviations
